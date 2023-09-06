@@ -1,0 +1,44 @@
+#!/bin/bash
+
+#Primero comprobamos que se hayan brindad correctamente los argumentos
+
+if [ $# -ne 2 ]; then
+        echo "Ups, algo salio mal! Por favor escribir ambos argumentos de la siguiente manera: $0 'nombreMascota' 'nombreGrupo'."
+        exit 1
+fi
+
+
+
+#Ahora que tenemos los argumentos, los almacenamos en variables
+
+nombreMascota=$1
+nombreGrupo=$2
+
+
+#Ahora que tenemos los argumentos, los almacenamos en variables
+
+nombreMascota=$1
+nombreGrupo=$2
+
+#Ahora, verificamos la existencia del usuario
+
+if [ id "$nombreMascota" -e ]; then
+        echo "Ups! Parece que ese usuario ya existe"
+else
+        sudo useradd -m -p $nombreMascota
+        #useradd -m -g "$nombreGrupo" -s /bin/bash "$nombreMascota"
+        echo "El usuario '$nombreMascota' ha sido creado"
+fi
+
+#Ahora, verificamos la existencia del grupo
+
+if [ ! grep "^$nombreGrupo:" /etc/group ]; then
+        echo "Ups! Parece que el grupo '$nombreGrupo' ya existe."
+else
+        groupadd "$nombreGrupo"
+        echo "El grupo '$nombreGrupo' ha sido creado." 
+fi
+
+#Finalmente, agregamos a los usuarios al grupo lab1
+sudo usermod -aG lab1 diego
+sudo usermod -aG lab1 $nombreMascota
