@@ -1,0 +1,69 @@
+#!/bin/bash
+
+
+#Primeramente creamos la funcion "get_permissions_verbose" para obtener distintos permisos, la cual recibe los permisos del archivo insertado
+
+get_permissions_verbose() {
+        local permisos=$1
+
+        #Ahora se crean tres variables para almacenar los distintos permisos
+
+        permisos_ususario="${permisos:1:3}"
+        permisos_grupo="${permisos:4:3}"
+        permisos_otros="${permisos:7:3}"
+
+        #Seguidamente, se muestran los permisos en pantalla
+
+
+
+        #Permisos de usuario
+
+        echo "Los permisos del usuario son:"
+        echo "Read: ${permisos_usuario:0:1}"
+        echo "Write: ${permisos_usuario:1:1}"
+        echo "Execute: ${permisos_usuario:2:1}"
+
+
+        #Permisos del grupo
+
+        echo "Los permisos del grupo son:"
+        echo "Read: ${permisos_grupo:0:1}"
+        echo "Write: ${permisos_grupo:1:1}"
+        echo "Execute: ${permisos_grupo:2:1}"
+
+
+        #Permisos de otros ususarios
+
+        echo "Los permisos de otros usuarios son:"
+        echo "Read: ${permisos_otros:0:1}"
+        echo "Write: ${permisos_otros:1:1}"
+        echo "Execute: ${permisos_otros:2:1}"
+
+
+}
+
+#Se verifica si se ingresa un archivo correctamente como argumento
+
+if [ $# -eq 0 ]; then
+        echo "El archivo no existe o fue incorrectamente ingresado. Para ingresar un archivo debe escribir lo siguiente: $0 'nombreDelArchivo'"
+        exit 1
+fi
+
+#Se guarda el nombre del archivo proporcionado
+
+archivo=$1
+
+
+#Se verifica la existencia del archivo
+if [ -e "$archivo" ]; then
+        echo "El archivo '$archivo' existe"
+
+        #Como el archivo existe, podemos obtener y almacenar sus permisos en la variable "permisos"
+        permisos="$(stat -c "%A%" "$archivo")"
+
+        #Ahora que tenemos los permisos podemos llamar a la funcion
+        get_permissions_verbose "$permisos"
+
+else
+        echo "El archivo no existe."
+fi
